@@ -45,6 +45,8 @@ BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+TARGET_KERNEL_SOURCE := kernel/sony/msm-$(SOMC_KERNEL_VERSION)/kernel
+TARGET_COMPILE_WITH_MSM_KERNEL := true
 
 # Use mke2fs to create ext4 images
 TARGET_USES_MKE2FS := true
@@ -142,11 +144,14 @@ WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
 # May be overriden by KernelConfig.mk if prebuilt kernel present.
 # Can also be turned off in Customization.mk in case it is desired to use a
 # custom ROM's kernel build system, e.g. LineageOS' or PE's.
-BUILD_KERNEL ?= true
+BUILD_KERNEL := true
+TARGET_KERNEL_CLANG_COMPILE := true
 
 -include $(KERNEL_PATH)/common-kernel/KernelConfig.mk
 
 ifeq ($(TARGET_NEEDS_DTBOIMAGE),true)
+BOARD_KERNEL_SEPARATED_DTBO := true
+TARGET_NEEDS_DTBOIMAGE := false
 ifeq ($(BUILD_KERNEL),true)
 BOARD_DTBO_IMAGE_NAME := dtbo-$(TARGET_DEVICE).img
 BOARD_PREBUILT_DTBOIMAGE ?= $(PRODUCT_OUT)/$(BOARD_DTBO_IMAGE_NAME)
