@@ -136,4 +136,6 @@ $(call inherit-product, device/sony/common/common-treble.mk)
 
 # Open GApps
 GAPPS_VARIANT := mini
+GAPPS_EXCLUDED_PACKAGES := PixelLauncher
+
 $(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
