@@ -133,3 +133,7 @@ $(call inherit-product, device/sony/common/common-packages.mk)
 $(call inherit-product, device/sony/common/common-perm.mk)
 $(call inherit-product, device/sony/common/common-prop.mk)
 $(call inherit-product, device/sony/common/common-treble.mk)
+
+# Open GApps
+GAPPS_VARIANT := mini
+$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
