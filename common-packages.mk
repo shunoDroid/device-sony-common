@@ -59,13 +59,26 @@ PRODUCT_PACKAGES += \
     libgps.utils \
     liblocation_api \
     libloc_pla \
+    libbatching \
+    libgeofencing \
     libgnss
 
 # Location
 PRODUCT_PACKAGES += \
     libloc_api_v02 \
     libloc_ds_api \
-    libgnsspps
+    libgnsspps \
+    libsynergy_loc_api
+
+# IMS (OSS)
+PRODUCT_PACKAGES += \
+    qti-telephony-hidl-wrapper \
+    qti_telephony_hidl_wrapper.xml \
+    qti-telephony-utils \
+    qti_telephony_utils.xml \
+    telephony-ext \
+    ims-ext-common \
+    ims_ext_common.xml
 
 # IPA
 PRODUCT_PACKAGES += \
@@ -109,6 +122,7 @@ PRODUCT_PACKAGES += \
 
 # Telephony
 PRODUCT_PACKAGES += \
+    ModemConfig \
     QcRilAm \
     SimDetect
 
@@ -120,6 +134,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libandroid_net \
     libprotobuf-cpp-full
+
+# FIXME: master: compat for libprotobuf
+# See https://android-review.googlesource.com/c/platform/prebuilts/vndk/v28/+/1109518
+PRODUCT_PACKAGES += \
+    libprotobuf-cpp-full-vendorcompat
 
 # RenderScript
 PRODUCT_PACKAGES += \

@@ -16,12 +16,15 @@
 PRODUCT_PACKAGES += \
     init.usb.rc \
     adb_tcp.rc \
+    adpl.rc \
     adsprpcd.rc \
     audiopd.rc \
     cdsprpcd.rc \
     cnss-daemon.rc \
     ipacm.rc \
+    dataqti.rc \
     dpmQmiMgr.rc \
+    dpmd.rc \
     imsdatadaemon.rc \
     imsqmidaemon.rc \
     imsrcsd.rc \
@@ -38,6 +41,8 @@ PRODUCT_PACKAGES += \
     qseecom.rc \
     rmt_storage.rc \
     sct_service.rc \
+    adsp-sensorspdr.rc \
+    sdsp-sensorspdr.rc \
     sensors.rc \
     sscrpcd.rc \
     tad.rc \
@@ -46,14 +51,9 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.rc
 
 # RIL
-ifeq ($(TARGET_USE_QCRILD),true)
 PRODUCT_PACKAGES += \
     qcrild.rc \
     qcrild2.rc
-else
-PRODUCT_PACKAGES += \
-    rild2.rc
-endif
 
 # Common init scripts
 PRODUCT_PACKAGES += \
@@ -62,3 +62,9 @@ PRODUCT_PACKAGES += \
     init.qcom.cdspstart.sh \
     init.qcom.ipastart.sh \
     init.qcom.slpistart.sh
+
+# modemswitcher
+PRODUCT_PACKAGES += \
+    vendor.somc.hardware.miscta@1.0-service.rc \
+    vendor.somc.hardware.modemswitcher@1.0-service.rc \
+    init.sony-modem-switcher.rc

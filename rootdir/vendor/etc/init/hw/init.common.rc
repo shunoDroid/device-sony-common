@@ -36,6 +36,13 @@ on init
     # vold needs keymaster that needs qseecomd
     start vendor.qseecomd
 
+    # Keymaster 3
+    start vendor.keymaster-3-0
+    # Keymaster 4
+    start vendor.keymaster-4-0
+    # Start vndservicemanager early
+    start vndservicemanager
+
     # Enable subsystem restart
     write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
     write /sys/bus/msm_subsys/devices/subsys0/restart_level "RELATED"
@@ -87,7 +94,7 @@ on fs
     # Start HW service manager early
     start hwservicemanager
 
-    mount_all /vendor/etc/fstab.${ro.hardware}
+    mount_all /vendor/etc/fstab.${ro.hardware} --early
 
     # Start DSP services as soon as partitions are mounted
     # ADSP devices
@@ -102,16 +109,36 @@ on fs
     # And force restoring of SELinux labels
     restorecon_recursive /mnt/vendor/persist/
 
-on post-fs
-    # Wait for qseecomd to be started
-    wait_for_prop vendor.sys.listeners.registered true
-
 on late-fs
+    mount none /vendor/oem /oem bind rec
+
     # Wait for hwservicemanager ready since fsck might be triggered in mount_all --late
     # In such case, init won't responce the property_set from hwservicemanager and then
     # cause services for bootanim not running.
     wait_for_prop hwservicemanager.ready true
 
+    exec_start wait_for_keymaster
+
+    # Try for @2.1, for legacy
+    start vendor.hwcomposer-2-1
+    # Try for @2.3, for GRAPHICS_V3 devices
+    start vendor.hwcomposer-2-3
+
+    # Configstore needed for surfaceflinger props
+    # TODO: Will be deprecated in R
+    start vendor.configstore-hal
+
+    # Legacy: Try for AOSP passthrough gralloc
+    start vendor.gralloc-2-0
+    # GRAPHICS_V3: Try for QTI HAL gralloc
+    start vendor.qti.hardware.display.allocator
+
+    # Mount RW partitions which need to run fsck
+    mount_all /vendor/etc/fstab.${ro.hardware} --late
+
+on post-fs
+    # Wait for qseecomd to be started
+    wait_for_prop vendor.sys.listeners.registered true
 
 on post-fs-data
     # We can start netd here before in is launched in common init.rc on zygote-start
@@ -139,6 +166,9 @@ on post-fs-data
     # Create directory for TZ Apps
     mkdir /data/misc/qsee 0770 system system
     mkdir /data/fpc 0700 system system
+
+    # Create directory for QSEE Secure FS listener
+    mkdir /data/vendor/tzstorage 0770 system system
 
     mkdir /data/misc/dts 0770 media audio
     mkdir /data/persist 0770 system system

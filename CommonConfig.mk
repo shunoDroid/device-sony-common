@@ -53,8 +53,6 @@ TARGET_USES_MKE2FS := true
 TARGET_USERIMAGES_USE_EXT4 := true
 
 BOARD_ROOT_EXTRA_FOLDERS := odm
-BOARD_ROOT_EXTRA_SYMLINKS += /$(TARGET_COPY_OUT_VENDOR)/firmware_mnt:/firmware
-BOARD_ROOT_EXTRA_SYMLINKS += /$(TARGET_COPY_OUT_VENDOR)/bt_firmware:/bt_firmware
 BOARD_ROOT_EXTRA_SYMLINKS += /mnt/vendor/persist:/persist
 
 # Filesystem
@@ -83,9 +81,32 @@ SOONG_CONFIG_gralloc_use_v1 := true
 endif
 
 # Audio
-BOARD_USES_ALSA_AUDIO := true
-AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
 USE_XML_AUDIO_POLICY_CONF := 1
+BOARD_USES_ALSA_AUDIO := true
+BOARD_SUPPORTS_OPENSOURCE_STHAL := true
+AUDIO_FEATURE_ENABLED_SVA_MULTI_STAGE := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
+
+AUDIO_FEATURE_ENABLED_DLKM := false
+AUDIO_USE_DEEP_AS_PRIMARY_OUTPUT := false
+AUDIO_FEATURE_ENABLED_VBAT_MONITOR := true
+AUDIO_FEATURE_ENABLED_ANC_HEADSET := true
+AUDIO_FEATURE_ENABLED_FLUENCE := true
+AUDIO_FEATURE_ENABLED_DS2_DOLBY_DAP ?= false
+AUDIO_FEATURE_ENABLED_HFP := true
+AUDIO_FEATURE_ENABLED_INCALL_MUSIC := true
+AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
+AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
+AUDIO_FEATURE_ENABLED_SPKR_PROTECTION := true
+AUDIO_FEATURE_ENABLED_DEV_ARBI := false
+MM_AUDIO_ENABLED_FTM := true
+TARGET_USES_QCOM_MM_AUDIO := true
+AUDIO_FEATURE_ENABLED_SOURCE_TRACKING := true
+AUDIO_FEATURE_ENABLED_GEF_SUPPORT := true
+BOARD_SUPPORTS_QAHW ?= false
+AUDIO_FEATURE_ENABLED_RAS := true
+AUDIO_FEATURE_ENABLED_DYNAMIC_LOG := false
+AUDIO_FEATURE_ENABLED_SND_MONITOR := true
 
 # Camera
 BOARD_QTI_CAMERA_32BIT_ONLY := true
@@ -145,35 +166,30 @@ endif
 # SELinux
 include device/sony/sepolicy/sepolicy.mk
 
-DEVICE_MANIFEST_FILE := $(COMMON_PATH)/vintf/manifest.xml
-DEVICE_MATRIX_FILE   := $(COMMON_PATH)/vintf/compatibility_matrix.xml
+DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/manifest.xml
+DEVICE_MATRIX_FILE   += $(COMMON_PATH)/vintf/compatibility_matrix.xml
 
 # Custom NXP vendor interfaces
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.nxp.nfc.interfaces.xml
 
+# Dynamic Power Management
+DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.qualcomm.qti.dpm.xml
+
 ifeq ($(PRODUCT_DEVICE_DS),true)
-ifeq ($(TARGET_USE_QCRILD),true)
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hw.qcradio_ds.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.qcradio_ds.xml
-else
-DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hw.radio_ds.xml
-endif
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.radio_ds.xml
 else
-ifeq ($(TARGET_USE_QCRILD),true)
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hw.qcradio_ss.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.qcradio_ss.xml
-else
-DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hw.radio_ss.xml
-endif
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.radio_ss.xml
 endif
 
-ifeq ($(TARGET_USE_QCRILD),true)
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hardware.radio.config.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.radio.uceservice.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.imsservices.xml
-endif
+DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.hw.dataservices.xml
+DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/vendor.somc.modem.xml
 
 ifeq ($(TARGET_KEYMASTER_V4),true)
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/vintf/android.hw.keymaster_v4.xml
